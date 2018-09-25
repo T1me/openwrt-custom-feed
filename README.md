@@ -1,1 +1,1 @@
-# openwrt-custom-feed
+# OpenWrt custom feed
