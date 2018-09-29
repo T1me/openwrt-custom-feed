@@ -1,8 +1,10 @@
 #!/bin/sh /etc/rc.common
 START=99
 
-run_njit()
-{
+USE_PROCD=1
+PROCD_DEBUG=1
+
+load_conf() {
 	local enable
 	config_get_bool enable $1 enable
 	
@@ -18,25 +20,33 @@ run_njit()
 		config_get ifname $1 ifname
 		
 		if [ "$domain" != "" ]; then
-			njit-client $username@$domain $password $ifname &
+			procd_append_param command $username@$domain $password $ifname
 		else
-			njit-client $username $password $ifname &
+			procd_append_param command $username $password $ifname
 		fi
-		
-		echo "NJIT Client has started."
 	fi
 }
 
-start()
-{
-	config_load njitclient
-	config_foreach run_njit login
+service_triggers() { 
+        procd_add_reload_trigger "login" 
+        procd_add_interface_trigger "interface.*" "eth0" /etc/init.d/njitclient reload
 }
 
-stop()
-{
-	killall njit-client
-	killall udhcpc
-	
+start_service() {
+    procd_open_instance
+    procd_set_param command njit-client
+	config_load njitclient
+	config_foreach load_conf njitclient
+    procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-5}
+    procd_set_param file /etc/config/njitclient
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_set_param user nobody
+    procd_close_instance
+
+    echo "NJIT Client has started."
+}
+
+stop_service() {
 	echo "NJIT Client has stoped."
 }

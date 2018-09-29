@@ -14,7 +14,7 @@ require("luci.sys")
 
 m = Map("njitclient", translate("NJIT Client"), translate("Configure NJIT 802.11x client."))
 
-s = m:section(TypedSection, "login", "")
+s = m:section(TypedSection, "njitclient", "")
 s.addremove = false
 s.anonymous = true
 
@@ -31,9 +31,9 @@ for k, v in ipairs(luci.sys.net.devices()) do
 	end
 end
 
-local apply = luci.http.formvalue("cbi.apply")
-if apply then
-	io.popen("/etc/init.d/njitclient restart")
-end
+--local apply = luci.http.formvalue("cbi.apply")
+--if apply then
+--	io.popen("/etc/init.d/njitclient restart")
+--end
 
 return m

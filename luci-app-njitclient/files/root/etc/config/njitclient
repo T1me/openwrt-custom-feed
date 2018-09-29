@@ -1,4 +1,4 @@
-config login
+config njitclient
 	option username ''
 	option password ''
 	option ifname 'eth0'
