@@ -1,5 +1,5 @@
 #!/bin/sh /etc/rc.common
-START=99
+START=90
 
 USE_PROCD=1
 PROCD_DEBUG=1
@@ -28,7 +28,7 @@ load_conf() {
 }
 
 service_triggers() { 
-        procd_add_reload_trigger "login" 
+        procd_add_reload_trigger "njitclient" 
         procd_add_interface_trigger "interface.*" "eth0" /etc/init.d/njitclient reload
 }
 
